@@ -79,8 +79,16 @@
                                     <i class="fa fa-question-circle me-1"/>
                                     Where to find these credentials?
                                 </h6>
+                                <div class="mb-2 small">
+                                    <strong>For Sandbox:</strong> 
+                                    <a href="https://sandbox.dev.clover.com/" target="_blank">sandbox.dev.clover.com</a>
+                                </div>
+                                <div class="mb-2 small">
+                                    <strong>For Production:</strong> 
+                                    Login via <a href="https://fdc-fedsso.firstdata.com/" target="_blank">Fiserv SSO</a> → 
+                                    Go to <a href="https://www.clover.com/global-developer-home/" target="_blank">Developer Dashboard</a>
+                                </div>
                                 <ol class="mb-0 small">
-                                    <li>Go to <a href="https://sandbox.dev.clover.com/" target="_blank">Clover Developer Dashboard</a></li>
                                     <li>Create a new app or use an existing one</li>
                                     <li>Find your App ID and App Secret in the app settings</li>
                                     <li>Your Merchant ID is shown in your merchant dashboard</li>
