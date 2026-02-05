@@ -57,6 +57,43 @@
                 <i class="fa fa-check me-1"/>
                 Your Clover account is connected and ready to use
             </div>
+
+            <!-- Manual Mode - Shown after timeout or if automatic mode fails -->
+            <div t-if="state.useManualMode and !isConnected" class="alert alert-warning mt-3">
+                <h6 class="alert-heading">
+                    <i class="fa fa-exclamation-triangle me-1"/>
+                    Automatic connection failed
+                </h6>
+                <p class="small mb-2">Please try the manual method:</p>
+                <ol class="small mb-3">
+                    <li>Make sure you are logged in to Clover via Fiserv SSO</li>
+                    <li>Verify the redirect URI is configured in your Clover App settings:<br/>
+                        <code t-esc="props.record.data.clover_redirect_url"/>
+                    </li>
+                    <li>Click the button below to open Clover authorization</li>
+                    <li>Authorize the app, then copy the code from the URL</li>
+                    <li>Paste the code in the Authorization Code field</li>
+                </ol>
+                <button 
+                    class="btn btn-outline-primary btn-sm"
+                    t-on-click="openManualAuth">
+                    <i class="fa fa-external-link me-2"/>
+                    Open Authorization Page
+                </button>
+            </div>
+
+            <!-- Troubleshooting Tips -->
+            <div t-if="state.isConnecting" class="alert alert-info mt-3">
+                <h6 class="alert-heading">
+                    <i class="fa fa-info-circle me-1"/>
+                    Connection in progress...
+                </h6>
+                <ul class="small mb-0">
+                    <li>If the page is blank, make sure you are logged in to Clover</li>
+                    <li>Login via: <a href="https://fdc-fedsso.firstdata.com/" target="_blank">fdc-fedsso.firstdata.com</a></li>
+                    <li>Wait up to 2 minutes for the authorization to complete</li>
+                </ul>
+            </div>
         </div>
     </t>
 </templates>

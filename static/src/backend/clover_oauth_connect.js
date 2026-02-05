@@ -24,7 +24,9 @@ export class CloverOAuthConnect extends Component {
         this.state = useState({
             isConnecting: false,
             showSetupWizard: false,
+            useManualMode: false,
         });
+        this.oauthCheckInterval = null;
 
         // Listen for OAuth callback messages
         browser.addEventListener("message", this._onOAuthMessage.bind(this));
@@ -63,8 +65,34 @@ export class CloverOAuthConnect extends Component {
                 type: "danger",
             });
             this.state.isConnecting = false;
+            this.state.useManualMode = true;
             return;
         }
+
+        // Set up timeout check (2 minutes)
+        this.oauthCheckInterval = setInterval(() => {
+            if (this.oauthWindow && this.oauthWindow.closed) {
+                // User closed the popup manually
+                clearInterval(this.oauthCheckInterval);
+                this.state.isConnecting = false;
+            }
+        }, 1000);
+
+        // Timeout after 2 minutes
+        setTimeout(() => {
+            if (this.state.isConnecting) {
+                clearInterval(this.oauthCheckInterval);
+                this.state.isConnecting = false;
+                this.state.useManualMode = true;
+                if (this.oauthWindow && !this.oauthWindow.closed) {
+                    this.oauthWindow.close();
+                }
+                this.notification.add(
+                    _t("OAuth timeout. Please check: 1) You are logged in to Clover, 2) The redirect URI is configured in your Clover App settings."),
+                    { type: "warning", sticky: true }
+                );
+            }
+        }, 120000);
     }
 
     /**
@@ -165,6 +193,16 @@ export class CloverOAuthConnect extends Component {
             return _t("Authorization pending");
         }
         return _t("Not connected");
+    }
+
+    /**
+     * Open authorization page in new tab (manual mode)
+     */
+    openManualAuth() {
+        const authorizationUrl = this.props.record.data.clover_authorization_url;
+        if (authorizationUrl) {
+            browser.open(authorizationUrl, "_blank");
+        }
     }
 }
 
