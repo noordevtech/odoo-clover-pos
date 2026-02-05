@@ -47,10 +47,95 @@ class PosCloverController(http.Controller):
             'clover_authorization_code': code,
         })
 
-        return request.render('Clover_pos.oauth_success', {
-            'payment_method': payment_method,
-            'code': code,
-        })
+        # Return HTML that sends message to parent window and closes
+        html_content = f"""
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Clover Authorization Successful</title>
+            <style>
+                body {{
+                    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    min-height: 100vh;
+                    margin: 0;
+                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                }}
+                .container {{
+                    text-align: center;
+                    background: white;
+                    padding: 40px;
+                    border-radius: 12px;
+                    box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+                    max-width: 400px;
+                }}
+                .success-icon {{
+                    font-size: 64px;
+                    color: #28a745;
+                    margin-bottom: 20px;
+                }}
+                h1 {{
+                    color: #333;
+                    margin-bottom: 10px;
+                    font-size: 24px;
+                }}
+                p {{
+                    color: #666;
+                    margin-bottom: 20px;
+                    line-height: 1.5;
+                }}
+                .loading {{
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 10px;
+                    color: #667eea;
+                }}
+                .spinner {{
+                    width: 20px;
+                    height: 20px;
+                    border: 2px solid #667eea;
+                    border-top-color: transparent;
+                    border-radius: 50%;
+                    animation: spin 1s linear infinite;
+                }}
+                @keyframes spin {{
+                    to {{ transform: rotate(360deg); }}
+                }}
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <div class="success-icon">✓</div>
+                <h1>Authorization Successful!</h1>
+                <p>Your Clover account has been connected successfully. This window will close automatically.</p>
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <span>Completing setup...</span>
+                </div>
+            </div>
+            <script>
+                // Send message to parent window
+                if (window.opener) {{
+                    window.opener.postMessage({{
+                        type: 'CLOVER_OAUTH_CALLBACK',
+                        code: '{code}',
+                        merchant_id: '{merchant_id or ""}'
+                    }}, '*');
+                }}
+                
+                // Close window after 2 seconds
+                setTimeout(function() {{
+                    window.close();
+                }}, 2000);
+            </script>
+        </body>
+        </html>
+        """
+        
+        return request.make_response(html_content, headers=[('Content-Type', 'text/html')])
 
     @http.route('/pos_clover/notification', type='json', methods=['POST'], auth='public', csrf=False, save_session=False)
     def clover_notification(self):

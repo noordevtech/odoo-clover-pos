@@ -12,61 +12,127 @@
                     <widget name="clover_payment_provider_card"/>
                 </div>
                 
-                <!-- Clover Configuration Fields - shown after Clover is selected -->
-                <field name="clover_device_id" 
-                       invisible="use_payment_terminal != 'clover'" 
-                       required="use_payment_terminal == 'clover'"
-                       placeholder="e.g., C031UQ12345678"/>
-                
-                <field name="clover_environment" 
-                       invisible="use_payment_terminal != 'clover'" 
-                       required="use_payment_terminal == 'clover'"/>
-                
-                <field name="clover_server" 
-                       invisible="use_payment_terminal != 'clover'"/>
-                
-                <field name="clover_merchant_id" 
-                       invisible="use_payment_terminal != 'clover'" 
-                       required="use_payment_terminal == 'clover'"
-                       placeholder="Enter your Merchant ID"/>
-                
-                <field name="clover_app_id" 
-                       invisible="use_payment_terminal != 'clover'" 
-                       required="use_payment_terminal == 'clover'"
-                       placeholder="Enter your App ID"/>
-                
-                <field name="clover_app_secret" 
-                       invisible="use_payment_terminal != 'clover'" 
-                       required="use_payment_terminal == 'clover'"
-                       password="True"
-                       placeholder="Enter your App Secret"/>
-                
-                <field name="clover_authorization_url" 
-                       invisible="use_payment_terminal != 'clover'"
-                       widget="CopyClipboardChar"/>
-                
-                <field name="clover_redirect_url" 
-                       invisible="use_payment_terminal != 'clover'"
-                       widget="CopyClipboardChar"/>
-                
-                <field name="clover_authorization_code" 
-                       invisible="use_payment_terminal != 'clover'"
-                       password="True"
-                       placeholder="Paste the authorization code after OAuth"/>
-                
-                <field name="clover_access_token" 
-                       invisible="use_payment_terminal != 'clover'"
-                       password="True"
-                       readonly="1"/>
+                <!-- Clover Configuration Section -->
+                <div invisible="use_payment_terminal != 'clover'" class="clover-config-section mt-4">
+                    <!-- Connection Status Widget -->
+                    <div class="card mb-3">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0">
+                                <i class="fa fa-plug me-2"/>
+                                Connection Status
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <widget name="clover_oauth_connect"/>
+                        </div>
+                    </div>
+
+                    <!-- Step 1: Device Configuration -->
+                    <div class="card mb-3">
+                        <div class="card-header bg-light">
+                            <h6 class="mb-0">
+                                <span class="badge bg-secondary me-2">1</span>
+                                Device Configuration
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <field name="clover_device_id" 
+                                           required="use_payment_terminal == 'clover'"
+                                           placeholder="e.g., C031UQ12345678"/>
+                                </div>
+                                <div class="col-md-6">
+                                    <field name="clover_environment" 
+                                           required="use_payment_terminal == 'clover'"/>
+                                </div>
+                            </div>
+                            <field name="clover_server" readonly="1" class="mt-2"/>
+                            <div class="text-muted small mt-2">
+                                <i class="fa fa-info-circle me-1"/>
+                                The device serial number can be found on the back of your Clover terminal or in the device settings.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: API Credentials -->
+                    <div class="card mb-3">
+                        <div class="card-header bg-light">
+                            <h6 class="mb-0">
+                                <span class="badge bg-secondary me-2">2</span>
+                                API Credentials
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <field name="clover_merchant_id" 
+                                   required="use_payment_terminal == 'clover'"
+                                   placeholder="Enter your Merchant ID"/>
+                            <field name="clover_app_id" 
+                                   required="use_payment_terminal == 'clover'"
+                                   placeholder="Enter your App ID"/>
+                            <field name="clover_app_secret" 
+                                   required="use_payment_terminal == 'clover'"
+                                   password="True"
+                                   placeholder="Enter your App Secret"/>
+                            <div class="alert alert-info mt-3 mb-0">
+                                <h6 class="alert-heading">
+                                    <i class="fa fa-question-circle me-1"/>
+                                    Where to find these credentials?
+                                </h6>
+                                <ol class="mb-0 small">
+                                    <li>Go to <a href="https://sandbox.dev.clover.com/" target="_blank">Clover Developer Dashboard</a></li>
+                                    <li>Create a new app or use an existing one</li>
+                                    <li>Find your App ID and App Secret in the app settings</li>
+                                    <li>Your Merchant ID is shown in your merchant dashboard</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: OAuth Configuration (Hidden/Read-only fields) -->
+                    <div class="card mb-3" invisible="not clover_access_token">
+                        <div class="card-header bg-light">
+                            <h6 class="mb-0">
+                                <span class="badge bg-secondary me-2">3</span>
+                                OAuth Configuration
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <field name="clover_authorization_url" 
+                                   widget="CopyClipboardChar"
+                                   readonly="1"/>
+                            <field name="clover_redirect_url" 
+                                   widget="CopyClipboardChar"
+                                   readonly="1"/>
+                            <field name="clover_authorization_code" 
+                                   password="True"
+                                   readonly="1"
+                                   placeholder="Auto-filled after OAuth"/>
+                            <field name="clover_access_token" 
+                                   password="True"
+                                   readonly="1"/>
+                        </div>
+                    </div>
+
+                    <!-- Help Box -->
+                    <div class="alert alert-warning" invisible="clover_access_token">
+                        <h6 class="alert-heading">
+                            <i class="fa fa-hand-pointer me-1"/>
+                            Next Steps
+                        </h6>
+                        <ol class="mb-0">
+                            <li>Fill in your Device Serial Number and select Environment</li>
+                            <li>Enter your API Credentials (Merchant ID, App ID, App Secret)</li>
+                            <li>Click the "Connect to Clover" button above</li>
+                            <li>Authorize the app in the popup window</li>
+                            <li>Test the connection</li>
+                        </ol>
+                    </div>
+                </div>
             </xpath>
             
             <xpath expr="//sheet" position="before">
                 <header invisible="use_payment_terminal != 'clover'">
-                    <button name="action_generate_access_token" 
-                            type="object" 
-                            string="Generate Access Token" 
-                            class="btn-primary"
-                            invisible="not clover_authorization_code or clover_access_token"/>
                     <button name="action_fetch_clover_device" 
                             type="object" 
                             string="Fetch Clover Device" 

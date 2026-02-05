@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="Clover_pos.CloverOAuthConnect">
+        <div class="clover-oauth-connect mb-3">
+            <div class="d-flex align-items-center gap-3">
+                <!-- Connection Status Badge -->
+                <div class="connection-status">
+                    <span t-if="isConnected" class="badge bg-success">
+                        <i class="fa fa-check-circle me-1"/>
+                        <t t-esc="connectionStatus"/>
+                    </span>
+                    <span t-elif="!isConnected and props.record.data.clover_authorization_code" class="badge bg-warning">
+                        <i class="fa fa-clock-o me-1"/>
+                        <t t-esc="connectionStatus"/>
+                    </span>
+                    <span t-else="" class="badge bg-secondary">
+                        <i class="fa fa-times-circle me-1"/>
+                        <t t-esc="connectionStatus"/>
+                    </span>
+                </div>
+
+                <!-- Connect Button -->
+                <button 
+                    t-if="!isConnected"
+                    class="btn btn-primary"
+                    t-on-click="connectToClover"
+                    t-att-disabled="!canConnect or state.isConnecting"
+                    t-att-class="{ 'btn-disabled': !canConnect }">
+                    <t t-if="state.isConnecting">
+                        <i class="fa fa-spinner fa-spin me-2"/>
+                        Connecting...
+                    </t>
+                    <t t-else="">
+                        <i class="fa fa-plug me-2"/>
+                        Connect to Clover
+                    </t>
+                </button>
+
+                <!-- Reconnect Button (if already connected) -->
+                <button 
+                    t-if="isConnected"
+                    class="btn btn-outline-primary"
+                    t-on-click="connectToClover">
+                    <i class="fa fa-refresh me-2"/>
+                    Reconnect
+                </button>
+            </div>
+
+            <!-- Help Text -->
+            <div t-if="!canConnect" class="text-muted small mt-2">
+                <i class="fa fa-info-circle me-1"/>
+                Please fill in Merchant ID, App ID, and App Secret first
+            </div>
+
+            <!-- Connected Info -->
+            <div t-if="isConnected" class="text-success small mt-2">
+                <i class="fa fa-check me-1"/>
+                Your Clover account is connected and ready to use
+            </div>
+        </div>
+    </t>
+</templates>
