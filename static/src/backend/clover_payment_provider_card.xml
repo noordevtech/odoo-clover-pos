@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="Clover_pos.CloverPaymentProviderCard">
+        <div class="d-flex align-items-center p-2 border rounded m-1" 
+             style="cursor: pointer; min-width: 180px;"
+             t-on-click="selectClover">
+            <div class="d-flex align-items-center">
+                <img src="/Clover_pos/static/src/img/clover_logo.png" 
+                     alt="Clover" 
+                     style="height: 40px; margin-right: 10px;"
+                     onerror="this.src='/web/static/img/placeholder.png'"/>
+                <span class="fw-bold">Clover</span>
+            </div>
+            <button class="btn btn-sm btn-success ms-auto">
+                Select
+            </button>
+        </div>
+    </t>
+</templates>

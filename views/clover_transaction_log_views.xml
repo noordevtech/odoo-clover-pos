@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Transaction Log List View -->
+    <record id="pos_clover_transaction_log_view_list" model="ir.ui.view">
+        <field name="name">pos.clover.transaction.log.list</field>
+        <field name="model">pos.clover.transaction.log</field>
+        <field name="arch" type="xml">
+            <list string="Clover Transaction Logs" default_order="create_date desc">
+                <field name="create_date" string="Created on"/>
+                <field name="create_uid" string="Created by"/>
+                <field name="transaction_type" string="Type"/>
+                <field name="name" string="Name"/>
+                <field name="status" 
+                       decoration-success="status == 'success'"
+                       decoration-danger="status == 'failed'"
+                       decoration-warning="status == 'pending'"
+                       decoration-muted="status == 'cancelled'"
+                       widget="badge"/>
+                <field name="request_data" string="Path" optional="show"/>
+                <field name="duration" string="Duration" optional="hide"/>
+                <field name="error_message" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Transaction Log Form View -->
+    <record id="pos_clover_transaction_log_view_form" model="ir.ui.view">
+        <field name="name">pos.clover.transaction.log.form</field>
+        <field name="model">pos.clover.transaction.log</field>
+        <field name="arch" type="xml">
+            <form string="Clover Transaction Log">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Transaction Info">
+                            <field name="transaction_type"/>
+                            <field name="status"/>
+                            <field name="amount"/>
+                            <field name="currency"/>
+                            <field name="duration"/>
+                        </group>
+                        <group string="References">
+                            <field name="payment_method_id"/>
+                            <field name="pos_order_id"/>
+                            <field name="pos_payment_id"/>
+                            <field name="clover_payment_id"/>
+                            <field name="clover_order_id"/>
+                        </group>
+                    </group>
+                    <group string="Card Details" invisible="not card_last_four">
+                        <group>
+                            <field name="card_type"/>
+                            <field name="card_last_four"/>
+                        </group>
+                        <group>
+                            <field name="auth_code"/>
+                        </group>
+                    </group>
+                    <group string="Timestamps">
+                        <group>
+                            <field name="request_timestamp"/>
+                        </group>
+                        <group>
+                            <field name="response_timestamp"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Request Data" name="request">
+                            <field name="request_data" widget="ace" options="{'mode': 'json'}" readonly="1"/>
+                        </page>
+                        <page string="Response Data" name="response">
+                            <field name="response_data" widget="ace" options="{'mode': 'json'}" readonly="1"/>
+                        </page>
+                        <page string="Error" name="error" invisible="not error_message">
+                            <field name="error_message" readonly="1"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Transaction Log Search View -->
+    <record id="pos_clover_transaction_log_view_search" model="ir.ui.view">
+        <field name="name">pos.clover.transaction.log.search</field>
+        <field name="model">pos.clover.transaction.log</field>
+        <field name="arch" type="xml">
+            <search string="Search Clover Logs">
+                <field name="name"/>
+                <field name="transaction_type"/>
+                <field name="clover_payment_id"/>
+                <field name="payment_method_id"/>
+                <separator/>
+                <filter string="Success" name="filter_success" domain="[('status', '=', 'success')]"/>
+                <filter string="Failed" name="filter_failed" domain="[('status', '=', 'failed')]"/>
+                <filter string="Pending" name="filter_pending" domain="[('status', '=', 'pending')]"/>
+                <separator/>
+                <filter string="Sales" name="filter_sale" domain="[('transaction_type', '=', 'sale')]"/>
+                <filter string="Refunds" name="filter_refund" domain="[('transaction_type', '=', 'refund')]"/>
+                <separator/>
+                <filter name="filter_date" date="create_date"/>
+                <group>
+                    <filter string="Type" name="group_type" context="{'group_by': 'transaction_type'}"/>
+                    <filter string="Status" name="group_status" context="{'group_by': 'status'}"/>
+                    <filter string="Date" name="group_date" context="{'group_by': 'create_date:day'}"/>
+                    <filter string="Payment Method" name="group_payment_method" context="{'group_by': 'payment_method_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Transaction Log Action -->
+    <record id="action_pos_clover_transaction_log" model="ir.actions.act_window">
+        <field name="name">Clover Logs</field>
+        <field name="res_model">pos.clover.transaction.log</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="pos_clover_transaction_log_view_search"/>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No Clover transaction logs yet
+            </p>
+            <p>
+                Transaction logs will appear here when you process payments through Clover terminals.
+            </p>
+        </field>
+    </record>
+
+    <!-- Menu Item under Point of Sale > Configuration -->
+    <menuitem id="menu_pos_clover_logging"
+              name="Clover Logs"
+              parent="point_of_sale.menu_point_config_product"
+              action="action_pos_clover_transaction_log"
+              sequence="50"/>
+</odoo>
