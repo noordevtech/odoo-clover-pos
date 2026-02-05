@@ -80,13 +80,14 @@
                                     Where to find these credentials?
                                 </h6>
                                 <div class="mb-2 small">
-                                    <strong>For Sandbox:</strong> 
-                                    <a href="https://sandbox.dev.clover.com/" target="_blank">sandbox.dev.clover.com</a>
+                                    <strong>Login via Fiserv SSO:</strong> 
+                                    <a href="https://fdc-fedsso.firstdata.com/" target="_blank">fdc-fedsso.firstdata.com</a>
+                                    <br/><span class="text-muted">(Works for both Sandbox and Production)</span>
                                 </div>
                                 <div class="mb-2 small">
-                                    <strong>For Production:</strong> 
-                                    Login via <a href="https://fdc-fedsso.firstdata.com/" target="_blank">Fiserv SSO</a> → 
-                                    Go to <a href="https://www.clover.com/global-developer-home/" target="_blank">Developer Dashboard</a>
+                                    <strong>Then go to Developer Dashboard:</strong><br/>
+                                    • Sandbox: <a href="https://sandbox.dev.clover.com/" target="_blank">sandbox.dev.clover.com</a><br/>
+                                    • Production: <a href="https://www.clover.com/global-developer-home/" target="_blank">www.clover.com/global-developer-home</a>
                                 </div>
                                 <ol class="mb-0 small">
                                     <li>Create a new app or use an existing one</li>

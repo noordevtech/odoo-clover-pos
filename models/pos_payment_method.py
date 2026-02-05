@@ -68,7 +68,7 @@ class PosPaymentMethod(models.Model):
         ('sandbox', 'Sandbox'),
         ('production', 'Production'),
     ], string='State', default='sandbox', required=True,
-    help='Select Sandbox for testing (sandbox.dev.clover.com). Select Production for live transactions (login via Fiserv SSO at fdc-fedsso.firstdata.com)')
+    help='Select environment for Clover API. Login via Fiserv SSO (fdc-fedsso.firstdata.com) works for both environments. Then navigate to sandbox.dev.clover.com for Sandbox or clover.com for Production.')
 
     clover_server = fields.Char(
         string='Server',
